@@ -10,7 +10,9 @@
         href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Kantumruy+Pro:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="animations.css">
     <link rel="stylesheet" href="styles.css">
+
 </head>
 
 <body>
@@ -460,12 +462,8 @@
         }, { threshold: 0.6 });
         counters.forEach(c => countObserver.observe(c));
 
-        // Contact form — Telegram delivery
-        // NOTE: for production, move this call to a small server endpoint so the
-        // bot token isn't exposed in client-side source.
-        const BOT_TOKEN = '8716769761:AAHygZS-AZQFhp1AI-IsnepSvmjzXVlQCbI';
-        const CHAT_ID = '7176789176';
-
+        // Contact form — delivered to Telegram through the serverless function /api/contact
+        // (bot token + chat id live in Vercel Environment Variables, not in this file)
         document.getElementById('contactForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitBtn');
@@ -479,13 +477,11 @@
             btn.disabled = true;
             btn.innerHTML = '<span class="khmer">កំពុងផ្ញើ...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
 
-            const text = `📬 New Message from Portfolio\n\n👤 Name: ${data.name}\n📧 Email: ${data.email}\n💬 Message: ${data.message}`;
-
             try {
-                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                const response = await fetch('/api/contact', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+                    body: JSON.stringify(data)
                 });
                 if (response.ok) {
                     btn.innerHTML = '<span class="khmer">បានផ្ញើជោគជ័យ!</span> <i class="fa-solid fa-check"></i>';
@@ -499,6 +495,7 @@
             setTimeout(() => { btn.disabled = false; btn.innerHTML = original; }, 2400);
         });
     </script>
+    <script src="animations.js" defer></script>
 </body>
 
 </html>
