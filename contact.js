@@ -1,5 +1,6 @@
 // Vercel serverless function — keeps the Telegram bot token off the client.
 // Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in Vercel → Project → Settings → Environment Variables.
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ ok: false });
   const { name, email, message } = req.body || {};
